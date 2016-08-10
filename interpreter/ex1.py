@@ -76,8 +76,8 @@ def main():
                 try: text = raw_input('calc> ')
                 except EOFError: break
                 if not text: continue
-                interperter = Interpreter(text)
-                result = interperter.expr()
+                interpreter = Interpreter(text)
+                result = interpreter.expr()
                 print result
                 
 if __name__ == '__main__':
