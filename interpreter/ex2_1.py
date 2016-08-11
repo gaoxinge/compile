@@ -9,7 +9,6 @@ class Token(object):
                 return 'Token({type}, {value})'.format(type = self.type, value = repr(self.value))
                 
         def __repr__(self):
-                
                 return self.__str__()
                 
 class Interpreter(object):
