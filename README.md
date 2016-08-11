@@ -26,8 +26,6 @@
 
 ### 知乎
 
-- [第一个 C 语言编译器是用什么语言编写的](https://www.zhihu.com/question/19934285)
-
 - [如何写一个简单的编译器](https://www.zhihu.com/question/36756224)
 
 ### Github
