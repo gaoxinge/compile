@@ -6,7 +6,7 @@
 
 - [作者的代码](https://github.com/rspivak/lsbasi)
 
-- [自己的代码]()
+- [自己的代码](https://github.com/gaoxinge/compile/tree/master/interpreter)
 
 - [一起来写个简单的解释器（英文版）](https://ruslanspivak.com/lsbasi-part1)
 
