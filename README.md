@@ -34,6 +34,8 @@
 
 - [c4](https://github.com/rswier/c4)
 
+- [serval](https://github.com/rspivak/serval)
+
 - [Let-s-build-a-compiler](https://github.com/vtudose/Let-s-build-a-compiler)
 
 ### ндов
