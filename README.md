@@ -34,6 +34,8 @@
 
 - [c4](https://github.com/rswier/c4)
 
-### 论文
+### 文献
+
+- [编译器设计](https://book.douban.com/subject/20436488)
 
 - [An Incremental Approach to Compiler Construction](http://scheme2006.cs.uchicago.edu/11-ghuloum.pdf)
