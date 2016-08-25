@@ -194,6 +194,16 @@ void next()
 	return;
 }
 
+void match(int tk)
+{
+	if(token == tk){next();}
+	else
+	{
+		printf("%d: except token: %d\n", line, tk);
+		exit(-1);
+	}
+}
+
 void program()
 {
 	next();

@@ -4,7 +4,6 @@
 int token;
 int token_val;
 char *src  = NULL;
-char *line = NULL;
 enum {Num};
 
 void next()
@@ -28,7 +27,7 @@ void match(int tk)
 {
 	if(token != tk)
 	{
-		printf("expected token: %d(%c), got: %d(%c)\n", tk, tk, token, token);
+		printf("expected token: %d(%c), got: %d(%c)", tk, tk, token, token);
 		exit(-1);
 	}
 	next();
@@ -101,5 +100,5 @@ void main()
 {
 	src = "1+( ( 12 * 3)  / 2  -5 )*  3";
 	next();
-	printf("%d\n", expr());
+	printf("%d", expr());
 }
