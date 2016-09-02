@@ -6,10 +6,10 @@
 int debug;
 int assembly;
 
-int line;
-char *src, *old_src;
-int token, token_val;
-int *symbols, *current_id, *idmain;
+int line;                           //line number of source code
+char *src, *old_src;                //pointer to string of source code 
+int token, token_val;               //current token of source code
+int *symbols, *current_id, *idmain; //symbol table
 
 int basetype; //type type of a declaration
 int exprtype; //the type of an expression
@@ -57,7 +57,7 @@ void next()
 		{
 			last_pos = src - 1;
 			hash = token;
-			while((token >= 'a' && token <= 'z') || (token >= 'A' && token <= 'Z') || (token == '_'))
+			while((*src >= 'a' && *src <= 'z') || (*src >= 'A' && *src <= 'Z') || (*src >= '0' &&  *src <= 9) || (*src == '_'))
 			{
 				hash = hash * 147 + *src;
 				src++;
@@ -80,6 +80,8 @@ void next()
 		else if(token >= '0' && token <= '9')
 		{
 			token_val = token - '0';
+			
+			//dec
 			if(token_val > 0)
 			{
 				while(*src >= '0' && *src <= '9')
@@ -89,17 +91,19 @@ void next()
 			}
 			else
 			{
+				//hex
 				if(*src == 'x' || *src == 'X')
 				{
-					token = *++src;
-					while((token >= '0' && token <= '9') || (token >= 'a' && token <= 'f') || (token >= 'A' && token <= 'F'))
+					src++;
+					while((*src >= '0' && *src <= '9') || (*src >= 'a' && *src <= 'f') || (*src >= 'A' && *src <= 'F'))
 					{
-						token _val = token_val * 16 + (token & 15) + (token >= 'A' ? 9 : 0);
-						token = *++src;
+						token _val = token_val * 16 + (*src & 15) + (*src >= 'A' ? 9 : 0);
+						src++;
 					}
 				}
 				else
 				{
+					//oct
 					while(*scr >= '0' && *src <= '7')
 					{
 						token_val = token_val * 8 + *src++ - '0';
@@ -115,11 +119,27 @@ void next()
 			while(*src != 0 && *src != token)
 			{
 				token_val = *src++;
-				if(token_val == 'n'){token_val = '\n';}
-				if(token == '"')    {*data++ = token_val;}
-				src++;
-				if(token == '"')    {token_val = (int)last_pos;}
-				else                {token = Num;}
+				if(token_val == '\\')
+				{
+					token_val = *src++;
+					if(token_val == 'n')
+					{
+						token_val = '\n';
+					}
+				}
+				if(token == '"')    
+				{
+					*data++ = token_val;
+				}
+			}
+			src++;
+			if(token == '"')
+			{
+				token_val = (int)last_pos;
+			}
+			else                
+			{
+				token = Num;
 			}
 			return;
 		}
@@ -167,7 +187,7 @@ void next()
 		}
 		else if(token == '|')
 		{
-			if(*src == '|')     {src++; token  Lor;}
+			if(*src == '|')     {src++; token = Lor;}
 			else                {token = Or;}
 			return;
 		}
@@ -202,7 +222,7 @@ void next()
 			token = Cond;
 			return;
 		}
-		else if(token == '~' || token == ';' || token == '{' || token == '}' || token == '(' || token == ')' || token == ']' || token == ',' || token == ':')
+		else if(token == '~' || token == ',' || token == ';' || token == ':' || token == '{' || token == '}' || token == '(' || token == ')' || token == ']')
 		{
 			return;
 		}
@@ -224,23 +244,29 @@ void match(int tk)
 int eval()
 {
 	int op, *tmp;
+	cycle = 0;
+	
 	while(1)
 	{
-		op = *op++;
-		if(op == IMM)      {ax = *pc++;}
-		else if(op == LC)  {ax = *(char *)ax;}
-		else if(op == LI)  {ax = *(int *)ax;}
-		else if(op == SC)  {ax = *(char *)*sp++ = ax;}
-		else if(op == SI)  {*--sp = ax;}
-		else if(op == PUSH){*--sp = ax;}
-		else if(op == JMP) {pc = (int *)*pc;}
-		else if(op == JZ)  {pc = ax ? pc + 1 : (int *)* pc;}
-		else if(op == JNZ) {px = ax ? (int *)*pc : pc + 1;}
-		else if(op == CALL){*--sp = (int)(pc + 1); pc = (int *)*pc;}
-		else if(op == ENT) {*--sp = (int)bp; bp = sp; sp = sp - *pc++;}
-		else if(op == ADJ) {sp = sp + *pc++;}
-		else if(op == LEV) {sp = bp; bp = (int *)*sp++; pc = (int *)*sp++;}
-		else if(op == LEA) {ax = (int)(bp + *pc++);}
+		op = *pc++;
+		cycle++;
+		
+		if(op == IMM)      {ax = *pc++;}                                    //local immediate value to ax
+		else if(op == LC)  {ax = *(char *)ax;}                              //load character to ax, address in ax
+		else if(op == LI)  {ax = *(int *)ax;}                               //load integer to ax, address in ax
+		else if(op == SC)  {ax = *(char *)*sp++ = ax;}                      //save character to address, value in ax, address on stack
+		else if(op == SI)  {ax = *(int *)*sp++ = ax;}                       //save character to address, value in ax, address on stack
+		else if(op == PUSH){*--sp = ax;}                                    //push the value of ax onto the stack
+		else if(op == JMP) {pc = (int *)*pc;}                               //jump to the address
+		else if(op == JZ)  {pc = ax ? pc + 1 : (int *)*pc;}                 //jump if ax is zero
+		else if(op == JNZ) {px = ax ? (int *)*pc : pc + 1;}                 //jump if ax is zero
+		else if(op == CALL){*--sp = (int)(pc + 1); pc = (int *)*pc;}        //call subroutine
+		else if(op == ENT) {*--sp = (int)bp; bp = sp; sp = sp - *pc++;}     //make new stack frame
+		else if(op == ADJ) {sp = sp + *pc++;}                               //add esp, <size>
+		else if(op == LEV) {sp = bp; bp = (int *)*sp++; pc = (int *)*sp++;} //restore call frame and PC
+		else if(op == LEA) {ax = (int)(bp + *pc++);}                        //load address for argument
+		
+		//运算符指令
 		else if(op == OR)  {ax = *sp++ | ax;}
 		else if(op == XOR) {ax = *sp++ ^ ax;}
 		else if(op == AND) {ax = *sp++ & ax;}
@@ -257,6 +283,8 @@ int eval()
 		else if(op == MUL) {ax = *sp++ * ax;}
 		else if(op == DIV) {ax = *sp++ / ax;}
 		else if(op == MOD) {ax = *sp++ % ax;}
+		
+		//内置函数
 		else if(op == EXIT){printf("exit(%d)", *sp); return *sp;}
 		else if(op == OPEN){ax = open((char *)sp[1], sp[0]);}
 		else if(op == CLOS){ax = close(*sp);}
@@ -264,13 +292,12 @@ int eval()
 		else if(op == PRTF){tmp = sp + pc[1]; ax = printf((char *)tmp[-1], tmp[-2], tmp[-3], tmp[-4], tmp[-5], tmp[-6]);}
 		else if(op == MALC){ax = (int)malloc(*sp);}
 		else if(op == MSET){ax = (int)memset((char *)sp[2], sp[1], *sp);}
-		else if(op == MCMP){ax = memcmp((char *)sp[2], (char *)sp[1], *sp)}
-		else
-		{
-			printf("unknown instruction:%d\n", op);
-			return -1;
-		}	
+		else if(op == MCMP){ax = memcmp((char *)sp[2], (char *)sp[1], *sp);}
+	
+		//error
+		else               {printf("unknown instruction: %d\n", op); return -1;}	
 	}
+	
 	return 0;
 }
 
