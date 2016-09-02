@@ -3,20 +3,33 @@
 #include <memory.h>
 #include <string.h>
 
-int token, token_val;
-char *src, *old_src;
-int poolsize;
+int debug;
+int assembly;
+
 int line;
-int *text, *old_text, *stack;
-char *data;
-int *pc, *bp, *sp, ax, cycle;
-int *current_id, *symbols, *idmain;
+char *src, *old_src;
+int token, token_val;
+int *symbols, *current_id, *idmain;
 
-int basetype, expr_type;
+int basetype; //type type of a declaration
+int exprtype; //the type of an expression
 
+int *pc, *bp, *sp, ax, cycle; //virtual machine registers
+int *text, *old_text;         //text segment
+char *data;                   //data segment 
+int *stack;                   //stack segment
+int poolsize;                 //default size of text/data/stack
+int index_of_bp;              //index of bp pointer on stack
+
+//token
 enum{Num = 128, Fun, Sys, Glo, Loc, Id, Char, Else, Enum, If, Int, Return, Sizeof, While, Assign, Cond, Lor, Lan, Or, Xor, And, Eq, Ne, Lt, Gt, Le, Ge, Shl, Shr, Add, Sub, Mul, Div, Mod, Inc, Dec, Brak};
+//identifier
 enum{Token, Hash, Name, Type, Class, Value, BType, BClass, BValue, IdSize};
+//types of declaration
+enum{Global, Local};
+//types of variable
 enum{CHAR, INT, PTR};
+//instructions
 enum{LEA, IMM, JMP, CALL, JZ, JNZ, ENT, ADJ, LEV, LI, LC, SI, SC, PUSH, OR, XOR, AND, EQ, NE, LT, GT, LE, GE, SHL, SHR, ADD, SUB, MUL, DIV, MOD, OPEN, READ, CLOS, PRTF, MALC, MSET, MCMP, EXIT};
 
 //LEXER
