@@ -309,24 +309,25 @@ void program()
 
 void global_declaration()
 {
-	int type;
-	int i;
-	
+	int type, i;
 	basetype = INT;
 	
 	if(token == Enum)
 	{
 		match(Enum);
+		
 		if(token != '{')
 		{
 			match(Id);
 		}
+		
 		if(token == '{')
 		{
 			match('{');
 			enum_declaration();
 			match('}');
 		}
+		
 		match(';');
 		return;
 	}
@@ -379,15 +380,19 @@ void global_declaration()
 			data = data + sizeof(int);
 		}
 		
-		if(token == ','){match(',');}
-		
-		next();
+		if(token == ',')
+		{
+			match(',');
+		}
 	}
+	
+	next();
 }
 
 void enum_declaration()
 {
 	int i = 0;
+	
 	while(token != '}')
 	{
 		if(token != Id)
@@ -395,7 +400,9 @@ void enum_declaration()
 			printf("%d: bad enum initializer %d\n", line, token);
 			exit(-1);
 		}
+		
 		next();
+		
 		if(token == Assign)
 		{
 			next();
@@ -407,12 +414,16 @@ void enum_declaration()
 			i = token_val;
 			next();
 		}
+		
 		current_id[Class] = Num;
-		current_id[Type] = INT;
+		current_id[Type]  = INT;
 		current_id[Value] = i++;
-		if(token == ','){next();}
+		
+		if(token == ',')
+		{
+			next();
+		}
 	}
-	
 }
 
 void function_declaration()
@@ -422,8 +433,8 @@ void function_declaration()
 	match(')');
 	match('{');
 	function_body();
-	
 	current_id = symbols;
+	
 	while(current_id[Token])
 	{
 		if(current_id[Class] == Loc)
@@ -432,27 +443,27 @@ void function_declaration()
 			current_id[Type]  = current_id[BType];
 			current_id[Value] = current_id[BValue];
 		}
+		
 		current_id = current_id + IdSize;
 	}
 }
 
 void function_parameter()
 {
-	int type;
-	int params;
-	params = 0;
+	int type, params = 0;
 	
 	while(token != ')')
 	{
 		type = INT;
+		
 		if(token == Int)
 		{
 			match(Int);
 		}
 		else if(token == Char)
 		{
-			type = CHAR;
 			match(Char);
+			type = CHAR;
 		}
 		
 		while(token == Mul)
@@ -481,17 +492,18 @@ void function_parameter()
 		current_id[BValue] = current_id[Value];
 		current_id[Value]  = params++;
 		
-		if(token == ','){match(',');}
-		
-		index_of_bp = params + 1;
+		if(token == ',')
+		{
+			match(',');
+		}
 	}
+	
+	index_of_bp = params + 1;
 }
 
 void function_body()
 {
-	int pos_local;
-	int type;
-	pos_local = index_of_bp;
+	int type, pos_local = index_of_bp;
 	
 	while(token == Int || token == Char)
 	{
@@ -501,6 +513,7 @@ void function_body()
 		while(token != ';')
 		{
 			type = basetype;
+			
 			while(token == Mul)
 			{
 				match(Mul);
@@ -527,14 +540,23 @@ void function_body()
 			current_id[BValue] = current_id[Value];
 			current_id[Value]  = ++pos_local;
 			
-			if(token == ','){match(',');}
+			if(token == ',')
+			{
+				match(',');
+			}
 		}
+		
 		match(';');
 	}
 	
 	*++text = ENT;
 	*++text = pos_local - index_of_bp;
-	while(token != '}'){statement();}
+	
+	while(token != '}')
+	{
+		statement();
+	}
+	
 	*++text = LEV;
 }
 
@@ -547,11 +569,11 @@ void statement()
 		match(If);
 		match('(');
 		expression(Assign);
-		match(')')
+		match(')');
 		*++text = JZ;
 		b = ++text;
-		
 		statment();
+		
 		if(token == Else)
 		{
 			match(Else);
@@ -580,19 +602,23 @@ void statement()
 	else if(token == '{')
 	{
 		match('{');
+		
 		while(token != '}')
 		{
 			statement();
 		}
+		
 		match('}');
 	}
 	else if(token == Return)
 	{
 		match(Return);
+		
 		if(token != ';')
 		{
 			expression(Assign);
 		}
+		
 		match(';');
 		*++text = LEV;
 	}
