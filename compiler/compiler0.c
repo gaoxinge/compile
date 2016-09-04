@@ -914,10 +914,12 @@ void expression(int level)
 	{
 		while(token >= level)
 		{
-			tmp = expr_type;
+			tmp = exprtype;
+			
 			if(token == Assign)
 			{
 				match(Assign);
+				
 				if(*text == LC || *text == LI)
 				{
 					*text = PUSH;
@@ -927,9 +929,10 @@ void expression(int level)
 					printf("%d: bad lvalue in assignment\n", line);
 					exit(-1);
 				}
+				
 				expression(Assign);
-				expr_type = tmp;
-				*++text = (expr_type == CHAR) ? SC : SI;
+				exprtype = tmp;
+				*++text = (exprtype == CHAR) ? SC : SI;
 			}
 			else if(token == Cond)
 			{
@@ -937,6 +940,7 @@ void expression(int level)
 				*++text = JZ;
 				addr = ++text;
 				expression(Assign);
+				
 				if(token == ':')
 				{
 					match(':');
@@ -946,6 +950,7 @@ void expression(int level)
 					printf("%d: missing colon in conditional\n", line);
 					exit(-1);
 				}
+				
 				*addr = (int)(text + 3);
 				*++text = JMP;
 				addr = ++text;
@@ -959,7 +964,7 @@ void expression(int level)
 				addr = ++text;
 				expression(Lan);
 				*addr = (int)(text + 1);
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Lan)
 			{
@@ -968,7 +973,7 @@ void expression(int level)
 				addr = ++text;
 				expresssion(Or);
 				*addr = (int)(text + 1);
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Or)
 			{
@@ -976,7 +981,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Xor);
 				*++text = OR;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Xor)
 			{
@@ -984,7 +989,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(And);
 				*++text = XOR;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == And)
 			{
@@ -992,7 +997,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Eq);
 				*++text = AND;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Eq)
 			{
@@ -1000,7 +1005,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Ne);
 				*++text = EQ;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Ne)
 			{
@@ -1008,7 +1013,7 @@ void expression(int level)
 				*++text = PUSH;
 				exprssion(Lt);
 				*++text = NE;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Lt)
 			{
@@ -1016,15 +1021,39 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Shl);
 				*++text = LT;
-				expr_type = INT;
+				exprtype = INT;
+			}
+			else if(token == Gt)
+			{
+				match(Gt);
+				*++text = PUSH;
+				expression(Shl);
+				*++text = Gt;
+				exprtype = INT;
+			}
+			else if(token == Le)
+			{
+				match(Le);
+				*++text = PUSH;
+				expression(Shl);
+				*++text = LE;
+				exprtype = INT;
 			}
 			else if(token == Ge)
 			{
 				match(Ge);
 				*++text = PUSH;
+				expression(Shl);
+				*++text = GE;
+				exprtype = INT;
+			}
+			else if(token == Shl)
+			{
+				match(Shl);
+				*++text = PUSH;
 				expression(Add);
 				*++text = SHL;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Shr)
 			{
@@ -1032,21 +1061,23 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Add);
 				*++text = SHR;
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else if(token == Add)
 			{
 				match(Add);
 				*++text = PUSH;
 				expression(Mul);
-				expr_type = tmp;
-				if(expr_type > PTR)
+				exprtype = tmp;
+				
+				if(exprtype > PTR)
 				{
 					*++text = PUSH;
 					*++text = IMM;
 					*++text = sizeof(int);
 					*++text = MUL;
 				}
+				
 				*++text = ADD;
 			}
 			else if(token == Sub)
@@ -1054,14 +1085,15 @@ void expression(int level)
 				match(Sub);
 				*++text = PUSH;
 				expression(Mul);
-				if(tmp > PTR && tmp == expr_type)
+				
+				if(tmp > PTR && tmp == exprtype)
 				{
 					*++text = SUB;
 					*++text = PUSH;
 					*++text = IMM;
 					*++text = sizeof(int);
 					*++text = DIV;
-					expr_type = INT;
+					exprtype = INT;
 				}
 				else if(tmp > PTR)
 				{
@@ -1070,12 +1102,12 @@ void expression(int level)
 					*++text = sizeof(int);
 					*++text = MUL;
 					*++text = SUB;
-					expr_type = tmp;
+					exprtype = tmp;
 				}
 				else
 				{
 					*++text = SUB;
-					expr_type = tmp;
+					exprtype = tmp;
 				}
 			}
 			else if(token == Mul)
@@ -1084,7 +1116,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Inc);
 				*++text = MUL;
-				expr_type = tmp;
+				exprtype = tmp;
 			}
 			else if(token == Div)
 			{
@@ -1092,7 +1124,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Inc);
 				*++text = DIV;
-				expr_type = tmp;
+				exprtype = tmp;
 			}
 			else if(token == Mod)
 			{
@@ -1100,7 +1132,7 @@ void expression(int level)
 				*++text = PUSH;
 				expression(Inc);
 				*++text = MOD;
-				expr_type = tmp;
+				exprtype = tmp;
 			}
 			else if(token == Inc || token == Dec)
 			{
@@ -1119,14 +1151,15 @@ void expression(int level)
 					printf("%d: bad value in increment\n", line);
 					exit(-1);
 				}
+				
 				*++text = PUSH;
 				*++text = IMM;
-				*++text = (expr_type > PTR) ? sizeof(int) : sizeof(char);
+				*++text = (exprtype > PTR) ? sizeof(int) : sizeof(char);
 				*++text = (token == Inc) ? ADD : SUB;
-				*++text = (expr_type == CHAR) ? SC : SI;
+				*++text = (exprtype == CHAR) ? SC : SI;
 				*++text = PUSH;
 				*++text = IMM;
-				*++text = (expr_type > PTR) ? sizeof(int) : sizeof(char);
+				*++text = (exprtype > PTR) ? sizeof(int) : sizeof(char);
 				*++text = (token == Inc) ? SUB : ADD;
 				match(token);
 			}
@@ -1136,6 +1169,7 @@ void expression(int level)
 				*++text = PUSh;
 				expression(Assign);
 				match(']');
+				
 				if(tmp > PTR)
 				{
 					*++text = PUSH;
@@ -1148,9 +1182,10 @@ void expression(int level)
 					printf("%d: pointer type expected\n", line);
 					exit(-1);
 				}
-				expr_type = tmp - PTR;
+				
+				exprtype = tmp - PTR;
 				*++text = ADD;
-				*++text = (expr_type == CHAR) ? LC : LI;
+				*++text = (exprtype == CHAR) ? LC : LI;
 			}
 			else
 			{
@@ -1165,6 +1200,7 @@ void expression(int level)
 int main(int argc, char **argv)
 {
 	int i, fd;
+	int *tmp;
 	
 	argc--;
 	argv++;
@@ -1172,28 +1208,33 @@ int main(int argc, char **argv)
 	poolsize = 256 * 1024;
 	line = 1;
 	
-	if((fd = open(*argv,0)) < 0)
+	if(argc > 0 && **argv == '-' && (*argv)[1] == 's')
+	{
+		assembly = 1;
+		--argc;
+		++argv;
+	}
+	
+	if(argc > 0 && **argv == '-' && (*argv)[1] == 'd')
+	{
+		debug = 1;
+		--argc;
+		++argv;
+	}
+	
+	if(argc < 1)
+	{
+		printf("usage: xc [-s] [-d] file ...\n");
+		return -1;
+	}
+	
+	if((fd = open(*argv, 0)) < 0)
 	{
 		printf("could not open(%s)\n", *argv);
 		return -1;
 	}
 	
-	if(!(src = old_src = malloc(poolsize)))
-	{
-		printf("could not malloc(%d) for source area\n", poolsize);
-		return -1;
-	}
-	
-	if((i = read(fd, src, poolsize - 1)) <= 0)
-	{
-		printf("read() return %d\n", i);
-		return -1;
-	}
-	
-	src[i] = 0;
-	close(fd);
-	
-	if(!(text = old_text = malloc(poolsize)))
+	if(!(text = malloc(poolsize)))
 	{
 		printf("could not malloc(%d) for text area\n", poolsize);
 		return -1;
@@ -1211,14 +1252,17 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	
+	if(!(symbols = malloc(poolsize)))
+	{
+		printf("could not malloc(%d) for symbol table\n", poolsize);
+		return -1;
+	}
+	
 	memset(text, 0, poolsize);
 	memset(data, 0, poolsize);
 	memset(stack, 0, poolsize);
-	memset(symbol, 0, poolsize);
-	
-	bp = sp =(int *)((int) stack + poolsize);
-	ax = 0;
-	
+	memset(symbols, 0, poolsize);
+	old_text = text;
 	src = "char else enum if int return sizeof while open read close printf malloc memset memcmp exit void main";
 	
 	i = Char; 
@@ -1242,17 +1286,40 @@ int main(int argc, char **argv)
 	next();
 	idmain = current_id;
 	
-	i = 0;
-	text[i++] = IMM;
-	text[i++] = 10;
-	text[i++] = PUSH;
-	text[i++] = IMM;
-	text[i++] = 20;
-	text[i++] = ADD;
-	text[i++] = PUSH;
-	text[i++] = EXIT;
-	pc = text;
+	if(!(src = old_src = malloc(poolsize)))
+	{
+		printf("could not malloc(%d) for source area\n", poolsize);
+		return -1;
+	}
 	
+	if((i = read(fd, src, poolsize - 1)) <= 0)
+	{
+		printf("read() returned %d\n", i);
+		return -1;
+	}
+	
+	src[i] = 0;
+	close(fd);
 	program();
+	
+	if(!(pc = (int *)idmain[Value]))
+	{
+		printf("main() not defined\n");
+		return -1;
+	}
+	
+	if(assembly)
+	{
+		return 0;
+	}
+	
+	sp = (int *)((int)stack + poolsize);
+	*--sp = EXIT;
+	*--sp = PUSH;
+	tmp = sp;
+	*--sp = argc;
+	*--sp = (int)argv;
+	*--sp = (int)tmp;
+	
 	return eval();
 }
