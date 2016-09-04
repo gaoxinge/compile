@@ -28,7 +28,9 @@
 
 - [自己的代码](https://github.com/gaoxinge/compile/tree/master/compiler)
 
-- [手把手教你做一个C语言编译器](http://blog.jobbole.com/97332)
+- [手把手教你做一个C语言编译器（地址1）](http://blog.jobbole.com/97332)
+
+- [手把手教你做一个C语言编译器（地址2）](http://lotabout.me/2015/write-a-C-interpreter-0)
 
 ## 其他
 
