@@ -635,39 +635,45 @@ void statement()
 
 void expression(int level)
 {
-	int *id;
-	int tmp;
+	int *id; 
 	int *addr;
+	int tmp;
+	
+	//unit_unary
 	{
 		if(!token)
 		{
-			printf("%d: unexepected token EOF of expression\n", line);
+			printf("%d: unexpected token EOF of expression\n", line);
 			exit(-1);
 		}
+		
 		if(token == Num)
 		{
 			match(Num);
 			*++text = IMM;
 			*++text = token_val;
-			expr_type = INT;
+			exprtype = INT;
 		}
 		else if(token == '"')
 		{
 			*++text = IMM;
 			*++text = token_val;
 			match('"');
+			
 			while(token == '"')
 			{
 				match('"');
 			}
+			
 			data = (char *)(((int)data + sizeof(int)) & (-sizeof(int)));
-			expr_type = PTR;
+			exprtype = PTR;
 		}
 		else if(token == Sizeof)
 		{
 			match(Sizeof);
 			match('(');
-			expr_type = INT;
+			exprtype = INT;
+			
 			if(token == Int)
 			{
 				match(Int);
@@ -675,37 +681,44 @@ void expression(int level)
 			else if(token == Char)
 			{
 				match(Char);
-				expr_type = CHAR;
+				exprtype = CHAR;
 			}
+			
 			while(token == Mul)
 			{
 				match(Mul);
-				expr_type = expr_type + PTR;
+				exprtype = exprtype + PTR;
 			}
+			
 			match(')');
 			*++text = IMM;
-			*++text = (expr_type == CHAR) ? sizeof(char) : sizeof(int);
-			expr_type = INT;
+			*++text = (exprtype == CHAR) ? sizeof(char) : sizeof(int);
+			exprtype = INT;
 		}
 		else if(token == Id)
 		{
 			match(Id);
 			id = current_id;
+			
 			if(token == '(')
 			{
 				match('(');
 				tmp = 0;
+				
 				while(token != ')')
 				{
 					expression(Assign);
 					*++text = PUSH;
 					tmp++;
+					
 					if(token == ',')
 					{
 						match(',');
 					}
 				}
+				
 				match(')');
+				
 				if(id[Class] == Sys)
 				{
 					*++text = id[Value];
@@ -720,18 +733,20 @@ void expression(int level)
 					printf("%d: bad function call\n", line);
 					exit(-1);
 				}
+				
 				if(tmp > 0)
 				{
 					*++text = ADJ;
 					*++text = tmp;
 				}
-				expr_type = id[Type];
+				
+				exprtype = id[Type];
 			}
 			else if(id[Class] == Num)
 			{
 				*++text = IMM;
 				*++text = id[Value];
-				expr_type = INT;
+				exprtype = INT;
 			}
 			else
 			{
@@ -743,58 +758,65 @@ void expression(int level)
 				else if(id[Class] == Glo)
 				{
 					*++text = IMM;
-					*++textt = id[Value];
+					*++text = id[Value];
 				}
 				else
 				{
 					printf("%d: undefined variable\n", line);
 					exit(-1);
 				}
-				expr_type = id[Type];
-				*++text = (expr_type == Char) ? LC : LI;
+				
+				exprtype = id[Type];
+				*++text = (exprtype == Char) ? LC : LI;
 			}
 		}
 		else if(token == '(')
 		{
 			match('(');
+			
 			if(token == Int || token == Char)
 			{
 				tmp = (token == Char) ? CHAR : INT;
 				match(token);
+				
 				while(token == Mul)
 				{
 					match(Mul);
 					tmp = tmp + PTR;
 				}
+				
 				match(')');
 				expression(Inc);
-				expr_type = tmp;
+				exprtype = tmp;
 			}
 			else
 			{
 				expression(Assign);
-				match('(');
+				match(')');
 			}
 		}
 		else if(token == Mul)
 		{
 			match(Mul);
 			expression(Inc);
-			if(expr_type >= PTR)
+			
+			if(exprtype >= PTR)
 			{
-				expr_type = expr_type - PTR;
+				exprtype = exprtype - PTR;
 			}
 			else
 			{
 				printf("%d: bad dereference\n", line);
 				exit(-1);
 			}
-			*++text = (expr_type == CHAR) ? LC : LI;
+			
+			*++text = (exprtype == CHAR) ? LC : LI;
 		}
 		else if(token == And)
 		{
 			match(And);
 			expression(Inc);
+			
 			if(*text == LC || *text == LI)
 			{
 				text--;
@@ -804,7 +826,8 @@ void expression(int level)
 				printf("%d: bad address of\n", line);
 				exit(-1);
 			}
-			expr_type = expr_type + PTR;
+			
+			exprtype = exprtype + PTR;
 		}
 		else if(token == '!')
 		{
@@ -814,7 +837,7 @@ void expression(int level)
 			*++text = IMM;
 			*++text = 0;
 			*++text = EQ;
-			expr_type = INT;
+			exprtype = INT;
 		}
 		else if(token == '~')
 		{
@@ -824,17 +847,18 @@ void expression(int level)
 			*++text = IMM;
 			*++text = -1;
 			*++text = XOR;
-			expr_type = INT;
+			exprtype = INT;
 		}
 		else if(token == Add)
 		{
 			match(Add);
 			expression(Inc);
-			expr_type = INT;
+			exprtype = INT;
 		}
 		else if(token == Sub)
 		{
 			match(Sub);
+			
 			if(token == Num)
 			{
 				*++text = IMM;
@@ -849,13 +873,15 @@ void expression(int level)
 				expression(Inc);
 				*++text = MUL;
 			}
-			expr_type = INT;
+			
+			exprtype = INT;
 		}
 		else if(token == Inc || token == Dec)
 		{
 			tmp = token;
 			match(token);
 			expression(Inc);
+			
 			if(*text == LC)
 			{
 				*text = PUSH;
@@ -871,11 +897,12 @@ void expression(int level)
 				printf("%d: bad lvalue of pre-increment\n", line);
 				exit(-1);	
 			}
+			
 			*++text = PUSH;
 			*++text = IMM;
-			*++text = (expr_type > PTR) ? sizeof(int) : sizeof(char);
+			*++text = (exprtype > PTR) ? sizeof(int) : sizeof(char);
 			*++text = (tmp == Inc) ? ADD : SUB;
-			*++text = (expr_type == CHAR) ? SC : SI;
+			*++text = (exprtype == CHAR) ? SC : SI;
 		}
 		else
 		{
