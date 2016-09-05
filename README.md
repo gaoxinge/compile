@@ -40,6 +40,8 @@
 
 ### Github
 
+- [the-super-tiny-compiler](https://github.com/thejameskyle/the-super-tiny-compiler)
+
 - [babyc](https://github.com/Wilfred/babyc)
 
 - [c4](https://github.com/rswier/c4)
