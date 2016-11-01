@@ -1,3 +1,4 @@
+'''
 COMMAND, NUMBER, REGISTER, MEMORY, FLAG, EOF = 'COMMAND', 'NUMBER', 'REGISTER', 'MEMORY', 'EOF'
 
 class Token:
@@ -124,7 +125,7 @@ class Interpreter:
             if tmp == 'add':
                 tmp1 = self.current_token.value
                 if self.current_token.type == 
-
+'''
 '''
 class cpu:
     def __init__(self):
