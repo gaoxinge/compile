@@ -6,6 +6,8 @@
 
 - [boss2]()
 
+- [boss3]()
+
 ## 一起来写个简单的解释器
 
 - [作者Ruslan Spivak](https://github.com/rspivak)
