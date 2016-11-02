@@ -1,5 +1,7 @@
-'''
-COMMAND, NUMBER, REGISTER, MEMORY, FLAG, EOF = 'COMMAND', 'NUMBER', 'REGISTER', 'MEMORY', 'EOF'
+r = [0, 0, 0, 0]
+m = {}
+
+COMMAND, NUMBER, REGISTER, MEMORY, EOF = 'COMMAND', 'NUMBER', 'REGISTER', 'MEMORY', 'EOF'
 
 class Token:
     def __init__(self, type, value):
@@ -90,82 +92,149 @@ class Interpreter:
         else:                                     self.error()
 
     def interpreter(self):
-        while self.current_token.type != EOF:
-            pc += 1
-            tmp = self.current_token.value
-            self.eat(COMMAND)
+        tmp = self.current_token.value
+        self.eat(COMMAND)
             
-            if tmp == 'mov':
-                tmp1 = self.current_token.value
-                if self.current_token.type == NUMBER:
-                    self.eat(NUMBER)
-                    tmp2 = self.current_token.value
-                    if self.current_token.type == REGISTER:
-                        self.eat(REGISTER)
-                        r[tmp2] = tmp1
-                    elif self.current_token.type == MEMORY:
-                        self.eat(MEMORY)
-                        m[r[tmp2]] = tmp1
+        if tmp == 'mov':
+            tmp1 = self.current_token.value
+            if self.current_token.type == NUMBER:
+                self.eat(NUMBER)
+                tmp2 = self.current_token.value
                 if self.current_token.type == REGISTER:
                     self.eat(REGISTER)
-                    tmp2 = self.current_token.value
-                    if self.current_token.type == REGISTER:
-                        self.eat(REGISTER)
-                        r[tmp2] = r[tmp1]
-                    elif self.current_token.type == MEMORY:
-                        self.eat(MEMORY)
-                        m[r[tmp2]] = r[tmp1]
-                if self.current_token.type == MEMORY:
+                    r[tmp2] = tmp1
+                elif self.current_token.type == MEMORY:
                     self.eat(MEMORY)
-                    tmp2 = self.current_token.value
-                    if self.current_token.type == REGISTER:
-                        self.eat(REGISTER)
-                        r[tmp2] = m[r[tmp1]]
+                    m[r[tmp2]] = tmp1
+            if self.current_token.type == REGISTER:
+                self.eat(REGISTER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] = r[tmp1]
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] = r[tmp1]
+            if self.current_token.type == MEMORY:
+                self.eat(MEMORY)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] = m[r[tmp1]]
 
-            if tmp == 'add':
-                tmp1 = self.current_token.value
-                if self.current_token.type == 
-'''
-'''
-class cpu:
-    def __init__(self):
-        r = [0, 0, 0, 0, 0, 0] #rf
-        self.esp, self.ebp = 0, 0 #rf
-        self.zf, self.sf, self.cf = 0, 0, 0 #cc
-        self.eip = 0 #pc
-        self.m = {} #memory
+        if tmp == 'push':
+            pass
+            
+        if tmp == 'pop':
+            pass
+            
+        if tmp == 'add':
+            tmp1 = self.current_token.value
+            if self.current_token.type == NUMBER:
+                self.eat(NUMBER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] += tmp1
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] += tmp1
+            if self.current_token.type == REGISTER:
+                self.eat(REGISTER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] += r[tmp1]
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] += r[tmp1]
+            if self.current_token.type == MEMORY:
+                self.eat(MEMORY)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] += m[r[tmp1]]
+                
+        if tmp == 'sub':
+            tmp1 = self.current_token.value
+            if self.current_token.type == NUMBER:
+                self.eat(NUMBER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] -= tmp1
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] -= tmp1
+            if self.current_token.type == REGISTER:
+                self.eat(REGISTER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] -= r[tmp1]
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] -= r[tmp1]
+            if self.current_token.type == MEMORY:
+                self.eat(MEMORY)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] -= m[r[tmp1]]
 
-    def error(self):
-        raise exception('')
+        if tmp == 'mul':
+            tmp1 = self.current_token.value
+            if self.current_token.type == NUMBER:
+                self.eat(NUMBER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] *= tmp1
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] *= tmp1
+            if self.current_token.type == REGISTER:
+                self.eat(REGISTER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] *= r[tmp1]
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] *= r[tmp1]
+            if self.current_token.type == MEMORY:
+                self.eat(MEMORY)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] *= m[r[tmp1]]
 
-    def Lexer(self, line):
-        self.token = line.split(' ')
+        if tmp == 'div':
+            tmp1 = self.current_token.value
+            if self.current_token.type == NUMBER:
+                self.eat(NUMBER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] /= tmp1
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] /= tmp1
+            if self.current_token.type == REGISTER:
+                self.eat(REGISTER)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] /= r[tmp1]
+                elif self.current_token.type == MEMORY:
+                    self.eat(MEMORY)
+                    m[r[tmp2]] /= r[tmp1]
+            if self.current_token.type == MEMORY:
+                self.eat(MEMORY)
+                tmp2 = self.current_token.value
+                if self.current_token.type == REGISTER:
+                    self.eat(REGISTER)
+                    r[tmp2] /= m[r[tmp1]]
 
-    def Parser(self, token):
-        if token[0] == 'mov':
-
-        if token[0] == 'leal':
-        
-        if token[0] == 'add':
-
-        if token[0] == 'sub':
-
-        if token[0] == 'imul':
-
-        if token[0] == 'sal':
-
-        if token[0] == 'sl':
-
-        if token[0] == 'sa':
-
-        if token[0] == 'cmp':
-
-        if token[0] == 'test':
-
-        if token[0] == 'jmp':
-
-        if token[0] == 'call':
-
-        if token[0] == 'ret':
-'''        
+        self.eat(EOF)
         
