@@ -2,9 +2,9 @@
 
 ## compile
 
-- [编程语言]()
+- [编程语言](https://github.com/gaoxinge/compile/tree/master/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80)
 
-- [标记语言]()
+- [标记语言](https://github.com/gaoxinge/compile/tree/master/%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80)
 
 ## 一起来写个简单的解释器
 
