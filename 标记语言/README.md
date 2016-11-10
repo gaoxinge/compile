@@ -44,3 +44,6 @@
 - 瀑布开发
 
 ## 浏览器
+
+- [How browsers work](http://taligarsiel.com/Projects/howbrowserswork1.htm)
+- [浏览器的渲染原理简介](http://coolshell.cn/articles/9666.html)
