@@ -14,7 +14,7 @@ def transfer(eroot):
     return root
 
 if __name__ == '__main__':
-    ehtml = etree.parse('index.html')
+    ehtml = etree.parse('index1.html')
     eroot = ehtml.getroot()
     root = transfer(eroot)
     s = interpreter(root)
