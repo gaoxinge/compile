@@ -6,6 +6,26 @@
 
 - [标记语言](https://github.com/gaoxinge/compile/tree/master/%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80)
 
+## Python
+
+- [作者Allison Kaptur](https://github.com/akaptur)
+
+- [作者的代码](https://github.com/nedbat/byterun)
+
+- [Python解释器简介（英文版）](http://akaptur.com/blog/2013/12/03/introduction-to-the-python-interpreter-4)
+
+- [Python解释器简介（中文版）](http://python.jobbole.com/81660)
+
+- [用Python实现Python解释器（英文版）](http://aosabook.org/en/500L/a-python-interpreter-written-in-python.html)
+
+- [用Python实现Python解释器（中文版）](http://python.jobbole.com/86380/?utm_source=blog.jobbole.com&utm_medium=relatedPosts)
+
+## 用Python从零开始写一个简单的解释器
+
+- [用Python从零开始写一个简单的解释器（英文版）](https://jayconrod.com/posts/40/a-simple-interpreter-from-scratch-in-python-part-4)
+
+- [用Python从零开始写一个简单的解释器（中文版）](http://python.jobbole.com/82455/?utm_source=blog.jobbole.com&utm_medium=relatedPosts)
+
 ## 一起来写个简单的解释器
 
 - [作者Ruslan Spivak](https://github.com/rspivak)
