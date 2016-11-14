@@ -50,6 +50,16 @@
 
 - [手把手教你做一个C语言编译器（地址2）](http://lotabout.me/2015/write-a-C-interpreter-0)
 
+## C语言解释器的实现
+
+- [C语言解释器的实现](http://www.cnblogs.com/linxr/archive/2011/12/16/2290474.html)
+
+## λ-calculus
+
+- [作者Zihan Chen](https://github.com/vczh)
+
+- [λ-calculus](http://www.cppblog.com/vczh)
+
 ## 其他
 
 ### 知乎
