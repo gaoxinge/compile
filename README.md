@@ -90,6 +90,8 @@
 
 ### 文献
 
+- [深入理解计算机系统](https://book.douban.com/subject/5333562)
+
 - [汇编语言](https://book.douban.com/subject/3037562)
 
 - [编译器设计](https://book.douban.com/subject/20436488)
