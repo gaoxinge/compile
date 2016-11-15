@@ -12,7 +12,7 @@
 
 - [作者的代码](https://github.com/nedbat/byterun)
 
-- [自己的代码]()
+- [自己的代码](https://github.com/gaoxinge/compile/tree/master/Python%E8%A7%A3%E9%87%8A%E5%99%A8)
 
 - [Python解释器简介（英文版）](http://akaptur.com/blog/2013/12/03/introduction-to-the-python-interpreter-4)
 
@@ -28,7 +28,7 @@
 
 - [作者的代码](https://github.com/rspivak/lsbasi)
 
-- [自己的代码](https://github.com/gaoxinge/compile/tree/master/interpreter)
+- [自己的代码](https://github.com/gaoxinge/compile/tree/master/%E4%B8%80%E8%B5%B7%E6%9D%A5%E5%86%99%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8)
 
 - [一起来写个简单的解释器（英文版）](https://ruslanspivak.com/lsbasi-part1)
 
@@ -46,7 +46,7 @@
 
 - [作者的代码](https://github.com/lotabout/write-a-C-interpreter)
 
-- [自己的代码](https://github.com/gaoxinge/compile/tree/master/compiler)
+- [自己的代码](https://github.com/gaoxinge/compile/tree/master/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%81%9A%E4%B8%80%E4%B8%AAC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E5%99%A8)
 
 - [手把手教你做一个C语言编译器（地址1）](http://blog.jobbole.com/97332)
 
