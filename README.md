@@ -36,6 +36,8 @@
 
 ## 用Python从零开始写一个简单的解释器
 
+- [自己的代码]()
+
 - [用Python从零开始写一个简单的解释器（英文版）](https://jayconrod.com/posts/40/a-simple-interpreter-from-scratch-in-python-part-4)
 
 - [用Python从零开始写一个简单的解释器（中文版）](http://python.jobbole.com/82455/?utm_source=blog.jobbole.com&utm_medium=relatedPosts)
