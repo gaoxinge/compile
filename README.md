@@ -36,7 +36,7 @@
 
 ## 用Python从零开始写一个简单的解释器
 
-- [自己的代码]()
+- [自己的代码](https://github.com/gaoxinge/compile/tree/master/%E7%94%A8Python%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8)
 
 - [用Python从零开始写一个简单的解释器（英文版）](https://jayconrod.com/posts/40/a-simple-interpreter-from-scratch-in-python-part-4)
 
@@ -57,12 +57,6 @@
 ## C语言解释器的实现
 
 - [C语言解释器的实现](http://www.cnblogs.com/linxr/archive/2011/12/16/2290474.html)
-
-## λ-calculus
-
-- [作者Zihan Chen](https://github.com/vczh)
-
-- [λ-calculus](http://www.cppblog.com/vczh)
 
 ## 其他
 
