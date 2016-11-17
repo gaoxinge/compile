@@ -60,6 +60,8 @@
 
 - [如何写一个简单的编译器](https://www.zhihu.com/question/36756224)
 
+- [从零开始的JSON库教程](https://zhuanlan.zhihu.com/p/22460835?refer=milocode)
+
 ### Github
 
 - [DOM-Drawer](https://github.com/starkwang/DOM-Drawer)
