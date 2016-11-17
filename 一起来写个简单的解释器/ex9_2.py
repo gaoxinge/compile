@@ -19,7 +19,7 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
-RESERVED_KEYWORDS = {'BEGIN': Token('BEGIN', 'BEGIN'), 'END': Token('END', 'END')}
+RESERVED_KEYWORDS = {'BEGIN': Token('BEGIN', 'BEGIN'), 'END': Token('END', 'END'), 'DIV': Token('DIV', '/')}
 
 class Lexer(object):
     def __init__(self, text):
@@ -65,9 +65,7 @@ class Lexer(object):
                 continue
 
             if self.current_char.isalpha():
-                token = self._id()
-                if token.value == 'div': return Token(DIV, '/')
-                else:                    return token
+                return self._id()
 
             if self.current_char.isdigit(): return Token(INTEGER, self.integer())
 
@@ -182,7 +180,6 @@ class Parser(object):
         while self.current_token.type == SEMI:
             self.eat(SEMI)
             results.append(self.statement())
-        if self.current_token.type == ID: self.error()
         return results
 
     def statement(self):
@@ -306,7 +303,7 @@ class Interpreter(NodeVisitor):
         tree = self.parser.parse()
         if tree is None: return ''
         else:            return self.visit(tree)
-        
+
 def main():
     text = open(sys.argv[1], 'r').read()
     lexer = Lexer(text)
@@ -317,5 +314,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    

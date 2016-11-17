@@ -1,12 +1,6 @@
 import sys
 
-###############################################################################
-#                                                                             #
-#  LEXER                                                                      #
-#                                                                             #
-###############################################################################
-
-(INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, ID, ASSIGN, BEGIN, END, SEMI, DOT, EOF) = ('INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', '(', ')', 'ID', 'ASSIGN', 'BEGIN', 'END',  'SEMI', 'DOT', 'EOF')
+INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, ID, ASSIGN, BEGIN, END, SEMI, DOT, EOF = 'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', '(', ')', 'ID', 'ASSIGN', 'BEGIN', 'END',  'SEMI', 'DOT', 'EOF'
 
 class Token(object):
     def __init__(self, type, value):
@@ -19,7 +13,7 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
-RESERVED_KEYWORDS = {'BEGIN': Token('BEGIN', 'BEGIN'), 'END': Token('END', 'END')}
+RESERVED_KEYWORDS = {'BEGIN': Token('BEGIN', 'BEGIN'), 'END': Token('END', 'END')}        
 
 class Lexer(object):
     def __init__(self, text):
@@ -55,7 +49,6 @@ class Lexer(object):
         while self.current_char is not None and self.current_char.isalnum():
             result += self.current_char
             self.advance()
-        #result = result.upper()
         token = RESERVED_KEYWORDS.get(result, Token(ID, result))
         return token
 
@@ -110,47 +103,38 @@ class Lexer(object):
 
         return Token(EOF, None)
 
-###############################################################################
-#                                                                             #
-#  PARSER                                                                     #
-#                                                                             #
-###############################################################################
+class Statement_list(object):
+    def __init__(self):
+        self.children = []
 
-class AST(object):
-    pass
-
-class BinOp(AST):
+class Assign(object):
+    def __init__(self, left, op, right):
+        self.left = left
+        self.token = self.op = op
+        self.right = right
+        
+class BinOp(object):
     def __init__(self, left, op, right):
         self.left = left
         self.token = self.op = op
         self.right = right
 
-class Num(AST):
-    def __init__(self, token):
-        self.token = token
-        self.value = token.value
-
-class UnaryOp(AST):
+class UnaryOp(object):
     def __init__(self, op, expr):
         self.token = self.op = op
         self.expr = expr
 
-class Compound(AST):
-    def __init__(self):
-        self.children = []
-
-class Assign(AST):
-    def __init__(self, left, op, right):
-        self.left = left
-        self.token = self.op = op
-        self.right = right
-
-class Var(AST):
+class Var(object):
     def __init__(self, token):
         self.token = token
         self.value = token.value
 
-class NoOp(AST):
+class Num(object):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+      
+class NoOp(object):
     pass
 
 class Parser(object):
@@ -166,33 +150,32 @@ class Parser(object):
         else:                                     self.error()
 
     def program(self):
-        node = self.compound_statement()
+        self.eat(BEGIN)
+        node = self.statement_list()
+        self.eat(END)
         self.eat(DOT)
         return node
 
-    def compound_statement(self):
-        self.eat(BEGIN)
-        nodes = self.statement_list()
-        self.eat(END)
-        root = Compound()
-        for node in nodes: root.children.append(node)
-        return root
-
     def statement_list(self):
-        node = self.statement()
-        results = [node]
+        node = Statement_list()
+        node.children.append(self.statement())
         while self.current_token.type == SEMI:
             self.eat(SEMI)
-            results.append(self.statement())
-        if self.current_token.type == ID: self.error()
-        return results
+            node.children.append(self.statement())
+        return node
 
     def statement(self):
         if self.current_token.type == BEGIN: node = self.compound_statement()
         elif self.current_token.type == ID:  node = self.assignment_statement()
         else:                                node = self.empty()
         return node
-
+    
+    def compound_statement(self):
+        self.eat(BEGIN)
+        node = self.statement_list()
+        self.eat(END)
+        return node
+        
     def assignment_statement(self):
         left = self.variable()
         token = self.current_token
@@ -200,14 +183,6 @@ class Parser(object):
         right = self.expr()
         node = Assign(left, token, right)
         return node
-
-    def variable(self):
-        node = Var(self.current_token)
-        self.eat(ID)
-        return node
-
-    def empty(self):
-        return NoOp()
 
     def expr(self):
         node = self.term()
@@ -248,18 +223,25 @@ class Parser(object):
         node = self.variable()
         return node
 
+    def variable(self):
+        node = Var(self.current_token)
+        self.eat(ID)
+        return node
+
+    def empty(self):
+        return NoOp()
+
     def parse(self):
         node = self.program()
         if self.current_token.type != EOF: self.error()
         return node
 
-###############################################################################
-#                                                                             #
-#  INTERPRETER                                                                #
-#                                                                             #
-###############################################################################
+class Interpreter(object):
+    GLOBAL_SCOPE = {}
 
-class NodeVisitor(object):
+    def __init__(self, parser):
+        self.parser = parser
+        
     def visit(self, node):
         method_name = 'visit_' + type(node).__name__
         visitor = getattr(self, method_name, self.generic_visit)
@@ -267,13 +249,7 @@ class NodeVisitor(object):
 
     def generic_visit(self, node):
         raise Exception('No visit_{} method'.format(type(node).__name__))
-
-class Interpreter(NodeVisitor):
-    GLOBAL_SCOPE = {}
-
-    def __init__(self, parser):
-        self.parser = parser
-
+        
     def visit_BinOp(self, node):
         if node.op.type == PLUS:  return self.visit(node.left) + self.visit(node.right)
         if node.op.type == MINUS: return self.visit(node.left) - self.visit(node.right)
@@ -288,7 +264,7 @@ class Interpreter(NodeVisitor):
         if op == PLUS:  return + self.visit(node.expr)
         if op == MINUS: return - self.visit(node.expr)
 
-    def visit_Compound(self, node):
+    def visit_Statement_list(self, node):
         for child in node.children: self.visit(child)
 
     def visit_Assign(self, node):
@@ -311,7 +287,6 @@ class Interpreter(NodeVisitor):
 
 def main():
     text = open(sys.argv[1], 'r').read()
-    text = text.upper()
     lexer = Lexer(text)
     parser = Parser(lexer)
     interpreter = Interpreter(parser)

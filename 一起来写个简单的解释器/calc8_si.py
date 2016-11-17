@@ -1,9 +1,3 @@
-###############################################################################
-#                                                                             #
-#  LEXER                                                                      #
-#                                                                             #
-###############################################################################
-
 INTEGER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, EOF = ('INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', '(', ')', 'EOF')
 
 class Token(object):
@@ -77,28 +71,19 @@ class Lexer(object):
             self.error()
                         
         return Token(EOF, None)
-
-###############################################################################
-#                                                                             #
-#  PARSER                                                                     #
-#                                                                             #
-###############################################################################
-
-class AST(object):
-    pass
-        
-class BinOp(AST):
+      
+class BinOp(object):
     def __init__(self, left, op, right):
         self.left = left
         self.token = self.op = op
         self.right = right
 
-class UnaryOp(AST):
+class UnaryOp(object):
     def __init__(self, op, expr):
         self.token = self.op = op
         self.expr = expr
 
-class Num(AST):
+class Num(object):
     def __init__(self, token):
         self.token = token
         self.value = token.value
@@ -155,13 +140,10 @@ class Parser(object):
         if self.current_token.type != EOF: self.error()
         return node
                 
-###############################################################################
-#                                                                             #
-#  INTERPRETER                                                                #
-#                                                                             #
-###############################################################################
+class Interpreter(object):
+    def __init__(self, parser):
+        self.parser = parser
 
-class NodeVisitor(object):
     def visit(self, node):
         method_name = 'visit_' + type(node).__name__
         visitor = getattr(self, method_name, self.generic_visit)
@@ -169,10 +151,6 @@ class NodeVisitor(object):
                 
     def generic_visit(self, node):
         raise Exception('No visit_{} method'.format(type(node).__name__))
-                
-class Interpreter(NodeVisitor):
-    def __init__(self, parser):
-        self.parser = parser
                 
     def visit_BinOp(self, node):
         if node.op.type == PLUS:  return self.visit(node.left) + self.visit(node.right)

@@ -310,7 +310,7 @@ class Interpreter(NodeVisitor):
         tree = self.parser.parse()
         if tree is None: return ''
         else:            return self.visit(tree)
-'''
+
 def main():
     text = open(sys.argv[1], 'r').read()
     lexer = Lexer(text)
@@ -321,4 +321,3 @@ def main():
 
 if __name__ == '__main__':
     main()
- '''   

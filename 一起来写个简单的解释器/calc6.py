@@ -69,7 +69,6 @@ class Lexer(object):
 				return Token(RPAREN, ')')
 				
 			self.error()
-			
 		return Token(EOF, None)
 
 class Interpreter(object):

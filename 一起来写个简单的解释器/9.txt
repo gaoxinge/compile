@@ -1,11 +1,21 @@
 BEGIN
-
+	;
     BEGIN
+		BEGIN
+			tmp := 1
+		END;
         number := 2;
         a := number;
         b := 10 * a + 10 * number / 4;
         c := a - - b
     END;
-
-    x := 11;
+	BEGIN
+		x := 11
+	END;
+	;;
+	BEGIN
+		y := 12
+	END
+	;
+    z := 13
 END.
