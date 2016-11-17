@@ -1,11 +1,4 @@
 import sys
-import collections
-
-###############################################################################
-#                                                                             #
-#  LEXER                                                                      #
-#                                                                             #
-###############################################################################
 
 (INTEGER, REAL, INTEGER_CONST, REAL_CONST, PLUS, MINUS, MUL, INTEGER_DIV, FLOAT_DIV, LPAREN, RPAREN, ID, ASSIGN, BEGIN, END, SEMI, DOT, PROGRAM, VAR, COLON, COMMA, EOF) = ('INTEGER', 'REAL', 'INTEGER_CONST', 'REAL_CONST', 'PLUS', 'MINUS', 'MUL', 'INTEGER_DIV', 'REAL_DIV', 'LPAREN', 'RPAREN', 'ID', 'ASSIGN', 'BEGIN', 'END', 'SEMI', 'DOT', 'PROGRAM', 'VAR', 'COLON', 'COMMA', 'EOF')
 
@@ -134,65 +127,56 @@ class Lexer(object):
 
         return Token(EOF, None)
 
-###############################################################################
-#                                                                             #
-#  PARSER                                                                     #
-#                                                                             #
-###############################################################################
-
-class AST(object):
-    pass
-
-class BinOp(AST):
+class BinOp(object):
     def __init__(self, left, op, right):
         self.left = left
         self.token = self.op = op
         self.right = right
 
-class Num(AST):
+class Num(object):
     def __init__(self, token):
         self.token = token
         self.value = token.value
 
-class UnaryOp(AST):
+class UnaryOp(object):
     def __init__(self, op, expr):
         self.token = self.op = op
         self.expr = expr
 
-class Compound(AST):
+class Compound(object):
     def __init__(self):
         self.children = []
 
-class Assign(AST):
+class Assign(object):
     def __init__(self, left, op, right):
         self.left = left
         self.token = self.op = op
         self.right = right
 
-class Var(AST):
+class Var(object):
     def __init__(self, token):
         self.token = token
         self.value = token.value
 
-class NoOp(AST):
+class NoOp(object):
     pass
 
-class Program(AST):
-    def __init__(self, name, block):
-        self.name = name
+class Program(object):
+    def __init__(self, variable, block):
+        self.variable = variable
         self.block = block
 
-class Block(AST):
+class Block(object):
     def __init__(self, declarations, compound_statement):
         self.declarations = declarations
         self.compound_statement = compound_statement
 
-class VarDecl(AST):
-    def __init__(self, var_node, type_node):
-        self.var_node = var_node
-        self.type_node = type_node
+class VarDecl(object):
+    def __init__(self, variable, type):
+        self.variable = variable
+        self.type = type
 
-class Type(AST):
+class Type(object):
     def __init__(self, token):
         self.token = token
         self.value = token.value
@@ -211,41 +195,40 @@ class Parser(object):
 
     def program(self):
         self.eat(PROGRAM)
-        var_node = self.variable()
-        prog_name = var_node.value
+        variable = self.variable()
         self.eat(SEMI)
-        block_node = self.block()
-        program_node = Program(prog_name, block_node)
+        block = self.block()
+        node = Program(variable, block)
         self.eat(DOT)
-        return program_node
+        return node
 
     def block(self):
-        declaration_nodes = self.declarations()
-        compound_statement_node = self.compound_statement()
-        node = Block(declaration_nodes, compound_statement_node)
+        declarations = self.declarations()
+        compound_statement = self.compound_statement()
+        node = Block(declarations, compound_statement)
         return node
 
     def declarations(self):
-        declarations = []
+        nodes = []
         if self.current_token.type == VAR:
             self.eat(VAR)
             while self.current_token.type == ID:
                 var_decl = self.variable_declaration()
-                declarations.extend(var_decl)
+                nodes.extend(var_decl)
                 self.eat(SEMI)
-        return declarations
+        return nodes
     
     def variable_declaration(self):
-        var_nodes = [Var(self.current_token)]
+        nodes = [Var(self.current_token)]
         self.eat(ID)
         while self.current_token.type == COMMA:
             self.eat(COMMA)
-            var_nodes.append(Var(self.current_token))
+            nodes.append(Var(self.current_token))
             self.eat(ID)
         self.eat(COLON)
-        type_node = self.type_spec()
-        var_declarations = [VarDecl(var_node, type_node) for var_node in var_nodes]
-        return var_declarations
+        type = self.type_spec()
+        nodes = [VarDecl(var, type) for var in nodes]
+        return nodes
 
     def type_spec(self):
         token = self.current_token
@@ -341,13 +324,12 @@ class Parser(object):
         if self.current_token.type != EOF: self.error()
         return node
 
-###############################################################################
-#                                                                             #
-#  INTERPRETER                                                                #
-#                                                                             #
-###############################################################################
-
-class NodeVisitor(object):
+class Interpreter(object):
+    def __init__(self, parser):
+        self.parser = parser
+        self.name = None
+        self.GLOBAL_SCOPE = {}
+        
     def visit(self, node):
         method_name = 'visit_' + type(node).__name__
         visitor = getattr(self, method_name, self.generic_visit)
@@ -355,24 +337,13 @@ class NodeVisitor(object):
 
     def generic_visit(self, node):
         raise Exception('No visit_{} method'.format(type(node).__name__))
-
-class Interpreter(NodeVisitor):
-    def __init__(self, parser):
-        self.parser = parser
-        self.GLOBAL_SCOPE = collections.OrderedDict()
-
+    
     def visit_Program(self, node):
+        self.name = node.variable.value
         self.visit(node.block)
 
     def visit_Block(self, node):
-        for declaration in node.declarations: self.visit(declaration)
         self.visit(node.compound_statement)
-
-    def visit_VarDecl(self, node):
-        pass
-
-    def visit_Type(self, node):
-        pass
     
     def visit_BinOp(self, node):
         if node.op.type == PLUS:          return self.visit(node.left) + self.visit(node.right)
@@ -416,9 +387,9 @@ def main():
     parser = Parser(lexer)
     interpreter = Interpreter(parser)
     interpreter.interpret()
-    for k,v in sorted(interpreter.GLOBAL_SCOPE.items()): print '%s = %s' % (k, v)
+    print interpreter.name
+    for k,v in interpreter.GLOBAL_SCOPE.items(): 
+        print '%s = %s' % (k, v)
 
 if __name__ == '__main__':
     main()
- 
-    
