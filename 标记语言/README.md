@@ -22,10 +22,9 @@
 - php
 - c/c++
 - python
-  - cgi
-  - wsgi
-  - web¿ò¼Ü
   - orm¿ò¼Ü
+  - web¿ò¼Ü
+  - cgi, wsgi
   - mvc, mvp, mvvm
 - java
 - scala
