@@ -64,8 +64,18 @@
 
 ### 文献
 
-- [深入理解计算机系统](https://book.douban.com/subject/5333562)
+- [龙书](https://book.douban.com/subject/1866231)
+
+- [虎书c](https://book.douban.com/subject/1886911)
+
+- [虎书java](https://book.douban.com/subject/1902451)
+
+- [虎书ml](https://book.douban.com/subject/1777406)
+
+- [鲸书](https://book.douban.com/subject/1821532)
+
+- [编译器设计](https://book.douban.com/subject/20436488)
 
 - [汇编语言](https://book.douban.com/subject/3037562)
 
-- [编译器设计](https://book.douban.com/subject/20436488)
+- [深入理解计算机系统](https://book.douban.com/subject/5333562)
