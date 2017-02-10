@@ -47,7 +47,7 @@
 - [How browsers work](http://taligarsiel.com/Projects/howbrowserswork1.htm)
 - [‰Ø¿¿∆˜µƒ‰÷»æ‘≠¿ÌºÚΩÈ](http://coolshell.cn/articles/9666.html)
 
-## Github
+## github
 
 - [xml-markdown](https://github.com/riku/Markdown-Syntax-CN)
 - [xml-tex](https://github.com/marcbachmann/node-html-pdf)
