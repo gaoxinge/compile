@@ -47,6 +47,17 @@
 - [How browsers work](http://taligarsiel.com/Projects/howbrowserswork1.htm)
 - [浏览器的渲染原理简介](http://coolshell.cn/articles/9666.html)
 
+## Github
+
+- [xml-markdown](https://github.com/riku/Markdown-Syntax-CN)
+- [xml-tex](https://github.com/marcbachmann/node-html-pdf)
+- [xml-GUI](https://github.com/vczh-libraries)
+- [json-charts](https://github.com/ecomfe)
+
 ## compile
 
 - [dom tree](https://github.com/gaoxinge/compile/tree/master/%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80/dom%20tree)
+
+## todo
+
+- 写一个xml与json相互转换的引擎
