@@ -62,28 +62,6 @@
 
 - [从零开始的JSON库教程](https://zhuanlan.zhihu.com/p/22460835?refer=milocode)
 
-### Github
-
-- [DOM-Drawer](https://github.com/starkwang/DOM-Drawer)
-
-- [Def](https://github.com/jojoin/Def)
-
-- [babyc](https://github.com/Wilfred/babyc)
-
-- [tinymoe](https://github.com/vczh/tinymoe)
-
-- [rswier](https://github.com/rswier)
-  - [c4](https://github.com/rswier/c4)
-  - [swieros](https://github.com/rswier/swieros)
-  
-- [rspivak](https://github.com/rspivak)
-  - [serval](https://github.com/rspivak/serval)
-  - [tinypie](https://github.com/rspivak/tinypie)
-
-- [the-super-tiny-compiler](https://github.com/thejameskyle/the-super-tiny-compiler)
-
-- [Let-s-build-a-compiler](https://github.com/vtudose/Let-s-build-a-compiler)
-
 ### 文献
 
 - [深入理解计算机系统](https://book.douban.com/subject/5333562)
