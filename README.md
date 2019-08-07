@@ -3,6 +3,7 @@
 ## summary
 
 - [summary](https://github.com/gaoxinge/compile/blob/master/summary/1.md)
+- [javascript / wasm](https://github.com/gaoxinge/compile/blob/master/summary/2.md)
 
 ## compile
 
